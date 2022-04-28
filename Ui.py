@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
-from Game import Game
+from tkinter import E
+from Game import Game, GameError
 
 class Ui(ABC):
 
@@ -19,14 +20,30 @@ class Terminal(Ui):
         self.__game = Game()
 
     def __get_input(self):
-        row = int(input("Enter row: "))
-        col = int(input("Enter column: "))
+        while True:
+            try:
+                #type check
+                row = int(input("Enter row: "))
+                col = int(input("Enter column: "))
+                #range check
+                if 1 <= row <= 3 and 1 <= col <= 3:
+                    break
+                else:
+                    print("Invalid input, please try again")
+                break
+            except ValueError:
+                print("Invalid input, please try again")
         return row,col
 
     def run(self):
         while self.__game.winner == None:
             print(self.__game)
             row, col = self.__get_input()
-            self.__game.play(row, col)
+            try:
+                self.__game.play(row, col)
+            except GameError as e:
+                print(e)
         print(self.__game)
+        if self.__game.winner == Game.DRAW:
+            print("The game was drawn")
         print(f"The winner is {self.__game.winner}")
