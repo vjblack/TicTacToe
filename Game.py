@@ -9,7 +9,14 @@ class Game:
         self.__player = Game.P1
 
     def __repr__(self):
-        return "Look! It's the 'board'!"
+        result = "  " + " ".join(str(i+1) for i in range(3))
+        for row in range(3):
+            result += f"\n{row+1} " + "|".join(self.__board[row])
+            if row != 2:
+                dashes = "-" * 5
+                result += f"\n  {dashes}"
+        result += f"\n\n{self.__player} turn to play"
+        return result
 
     def play(self,row,col):
         row -= 1 #zero-base the row and column
@@ -22,6 +29,15 @@ class Game:
     
     @property
     def winner(self):
+        for p in (Game.P1, Game.P2):
+            for row in range(3): #checks all rows
+                if all(self.__board[row][col] == p for col in range(3)):
+                    return p
+            for col in range(3): #checks all columns
+                if all(self.__board[row][col] == p for row in range(3)):
+                    return p
+            if all(self.__board[2-i][i] == p for i in range(3)):
+                return p
         return None
 #hello, can you see this change???
 if __name__ == "__main__":

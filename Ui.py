@@ -28,4 +28,5 @@ class Terminal(Ui):
             print(self.__game)
             row, col = self.__get_input()
             self.__game.play(row, col)
+        print(self.__game)
         print(f"The winner is {self.__game.winner}")
