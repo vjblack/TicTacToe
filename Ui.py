@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
-from tkinter import Tk, Frame, Button, X
+from platform import win32_edition
+from tkinter import Tk, Frame, Button, X, Y, Toplevel, StringVar
 from Game import Game, GameError
+from itertools import product
 
 class Ui(ABC):
 
@@ -37,7 +39,33 @@ class Gui(Ui):
         pass
 
     def __play_game(self):
-        pass
+        self.__game = Game()
+        game_win = Toplevel(self.__root)
+        game_win.title("Game")
+        frame = Frame(game_win)
+        frame.grid(row=0,column=0)
+
+        self.__buttons = [[None for _ in range(3)] for _ in range(3)]
+        for row,col in product(range(3),range(3)):
+            b = StringVar()
+            b.set(self.__game.at(row+1,col+1))
+            self.__buttons[row][col] = b
+            cmd = lambda r=row, c=col: self.__play(r,c)
+            Button(
+                frame, 
+                textvariable = b,
+                command = cmd
+            ).grid(row=row,column=col)        
+
+        Button(
+            game_win,
+            text = "Dismiss",
+            command = game_win.destroy
+        ).grid(row=1,column=0)
+
+    def __play(self,r,c):
+        self.__game.play(r+1,c+1)
+        self.__buttons[r][c].set(self.__game.at(r+1,c+1))
 
     def __quit(self):
         self.__root.quit()
