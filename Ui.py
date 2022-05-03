@@ -50,11 +50,11 @@ class Gui(Ui):
             b = StringVar()
             b.set(self.__game.at(row+1,col+1))
             self.__buttons[row][col] = b
-            cmd = lambda r=row, c=col: self.__play(r,c)
+            cmd = lambda r=row, c=col: self.__play(r,c) #anonymous funciton with default arguments
             Button(
                 frame, 
                 textvariable = b,
-                command = cmd
+                command = cmd #calls command with no arguments, uses default and allows value to be played
             ).grid(row=row,column=col)        
 
         Button(
