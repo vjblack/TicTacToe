@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from platform import win32_edition
-from tkinter import Tk, Frame, Button, X, Y, Toplevel, StringVar
+from tkinter import Tk, Frame, Button, X, Y, Toplevel, StringVar, Scrollbar, Text, LEFT, RIGHT, Grid, N,S,E,W
 from Game import Game, GameError
 from itertools import product
 
@@ -33,6 +33,14 @@ class Gui(Ui):
             text = "Quit",
             command = self.__quit
          ).pack(fill=X)
+         
+        scroll = Scrollbar(frame)
+        console = Text(frame, height=4, width=50)
+        scroll.pack(side=RIGHT, fill=Y)
+        console.pack(side=LEFT, fill=Y)
+
+        scroll.config(command=console.yview)
+        console.config(yscrollcommand=scroll.set)
         
         self.__root = root
     def __show_help(self):
@@ -45,6 +53,12 @@ class Gui(Ui):
         frame = Frame(game_win)
         frame.grid(row=0,column=0)
 
+        #to allow resizing
+        Grid.columnconfigure(game_win, 0, weight=1)
+        Grid.rowconfigure(game_win, 0, weight=1)
+        frame.grid(row=0, column=0, sticky=N+S+E+W)
+
+
         self.__buttons = [[None for _ in range(3)] for _ in range(3)]
         for row,col in product(range(3),range(3)):
             b = StringVar()
@@ -55,7 +69,11 @@ class Gui(Ui):
                 frame, 
                 textvariable = b,
                 command = cmd #calls command with no arguments, uses default and allows value to be played
-            ).grid(row=row,column=col)        
+            ).grid(row=row,column=col, sticky=N+S+E+W)        
+
+        for i in range(3):
+            Grid.rowconfigure(frame, i, weight=1)
+            Grid.columnconfigure(frame, i, weight=1)
 
         Button(
             game_win,
